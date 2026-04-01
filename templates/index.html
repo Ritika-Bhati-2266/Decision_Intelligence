@@ -1,492 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--
-  WHY: charset first — browser needs to know encoding before parsing anything
-  WHY: viewport meta — without this, mobile zooms out and shows desktop layout
-  WHY: description for SEO + shareability
--->
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
-<meta name="description" content="AI-powered decision intelligence system"/>
-<title>DecisionIQ Premium — Decision Intelligence</title>
-
-<!-- WHY: External CSS before any content so page renders styled immediately -->
-<link rel="stylesheet" href="/static/css/main.css"/>
-
-<!-- WHY: Chart.js from CDN — faster than self-hosting, cached across sites -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" defer></script>
-<!-- WHY: defer = JS loads after HTML, doesn't block rendering -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DecisionIQ — AI-Powered Business Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════
-     BACKGROUND (CSS-only animated, no performance hit)
-════════════════════════════════════════════════════ -->
-<div class="bg-canvas" aria-hidden="true">
-  <div class="bg-orb bg-orb-1"></div>
-  <div class="bg-orb bg-orb-2"></div>
-  <div class="bg-orb bg-orb-3"></div>
-</div>
-<div class="bg-grid" aria-hidden="true"></div>
+<!-- Animated Background -->
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
 
-<!-- ════════════════════════════════════════════════════
-     LOADER OVERLAY
-════════════════════════════════════════════════════ -->
-<div class="loader" id="loader" role="alert" aria-live="polite" aria-label="Analyzing decision">
-  <div class="l-ring"></div>
-  <div class="l-msg" id="l-msg">Initializing…</div>
-  <div class="l-dots" aria-hidden="true">
-    <div class="l-dot" id="ls0"></div><div class="l-dot" id="ls1"></div>
-    <div class="l-dot" id="ls2"></div><div class="l-dot" id="ls3"></div>
-    <div class="l-dot" id="ls4"></div>
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">Decision<span class="accent">IQ</span></span>
+    </div>
+    <nav class="nav">
+      <a href="#analyze" class="nav-link">Analyze</a>
+      <a href="#examples" class="nav-link">Examples</a>
+      <a href="#how" class="nav-link">How It Works</a>
+    </nav>
+    <div class="header-badge">AI Powered</div>
   </div>
-</div>
+</header>
 
-<!-- WHY: role="alert" + aria-live="polite" announces loading to screen readers -->
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-tag">Predictive Intelligence Engine</div>
+  <h1 class="hero-title">
+    Know If Your<br>
+    <span class="hero-gradient">Business Will Succeed</span><br>
+    Before You Begin
+  </h1>
+  <p class="hero-sub">AI analyzes startups, coaching institutes, restaurants, retail brands & more — delivering precise success probability with deep strategic insights.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">15+</span><span class="stat-label">Business Types</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Analysis Accuracy</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">< 10s</span><span class="stat-label">Response Time</span></div>
+  </div>
+  <a href="#analyze" class="cta-btn">Start Analysis <span>→</span></a>
+</section>
 
-<!-- ════════════════════════════════════════════════════
-     TOAST
-════════════════════════════════════════════════════ -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- Main Analyzer -->
+<section class="analyzer-section" id="analyze">
+  <div class="section-header">
+    <div class="section-tag">Intelligence Engine</div>
+    <h2 class="section-title">Analyze Any Business</h2>
+    <p class="section-sub">Fill in your details and let AI deliver a comprehensive success prediction</p>
+  </div>
 
-<!-- ════════════════════════════════════════════════════
-     SIDEBAR OVERLAY (mobile only — click to close)
-════════════════════════════════════════════════════ -->
-<div class="sidebar-overlay" id="sb-overlay" aria-hidden="true"></div>
-
-<!-- ════════════════════════════════════════════════════
-     FLOATING ACTION BUTTON — Mobile only
-     WHY: When sidebar is hidden, user needs a way
-     to access inputs. FAB is standard mobile pattern.
-════════════════════════════════════════════════════ -->
-<button class="fab-analyze" id="fab-analyze" aria-label="Open analysis panel">
-  ⚡ Analyze
-</button>
-
-<!-- ════════════════════════════════════════════════════
-     APP SHELL
-════════════════════════════════════════════════════ -->
-<div class="app">
-
-  <!-- ══════════════════════════════════════════════
-       NAVBAR
-  ══════════════════════════════════════════════ -->
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-
-    <!-- WHY: Hamburger button only visible on mobile (<769px) via CSS -->
-    <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
-      ☰
-    </button>
-
-    <a class="nav-brand" href="#" aria-label="DecisionIQ Home">
-      <div class="nav-logo-mark" aria-hidden="true">🧠</div>
-      <div>
-        <div class="nav-brand-text"><span class="n1">Decision</span><span class="n2">IQ</span></div>
-      </div>
-      <span class="nav-version">PREMIUM v4</span>
-    </a>
-
-    <!-- WHY: Hidden on mobile via CSS (nav-badge display:none < 769px) -->
-    <span class="nav-badge nb-cyan">XAI</span>
-    <span class="nav-badge nb-purple">Multi-Domain</span>
-    <span class="nav-badge nb-green">Scenarios</span>
-    <div class="nav-divider" aria-hidden="true"></div>
-
-    <button class="nav-btn" id="btn-back" onclick="showView('result')" style="display:none" aria-label="Back to result">
-      ← Back
-    </button>
-    <button class="nav-btn" id="btn-compare" onclick="toggleCmpMode()" aria-pressed="false">
-      ⚖ Compare
-    </button>
-    <button class="nav-btn" onclick="newSession()" aria-label="Start new analysis">
-      ＋ New
-    </button>
-  </nav>
-
-  <!-- ══════════════════════════════════════════════
-       WORKSPACE
-  ══════════════════════════════════════════════ -->
-  <div class="workspace">
-
-    <!-- ══════════════════════════════════════════
-         SIDEBAR
-         WHY: position:fixed on mobile (drawer),
-         position:relative on tablet+ (panel)
-    ══════════════════════════════════════════ -->
-    <aside class="sidebar" id="sidebar" role="complementary" aria-label="Analysis configuration">
-
-      <!-- Mobile close row -->
-      <div class="sidebar-close">
-        <span style="font-size:0.72rem;color:var(--t2);font-weight:600">Configure Decision</span>
-        <button class="btn-close-sb" id="btn-close-sb" aria-label="Close sidebar">
-          ✕ Close
-        </button>
-      </div>
-
-      <!-- ── DOMAIN SELECTION ── -->
-      <div>
-        <div class="sec-label">Domain</div>
-        <div class="domain-grid" id="domain-grid" role="radiogroup" aria-label="Select decision domain">
-          <!-- Built by JS: buildDomainCards() -->
+  <div class="analyzer-container">
+    <!-- Left: Form Panel -->
+    <div class="form-panel">
+      <div class="venture-selector">
+        <div class="venture-label">Select Business Type</div>
+        <div class="venture-grid">
+          <button class="venture-btn active" data-type="startup" onclick="setVentureType('startup', this)">
+            <span class="v-icon">🚀</span><span>Startup</span>
+          </button>
+          <button class="venture-btn" data-type="coaching" onclick="setVentureType('coaching', this)">
+            <span class="v-icon">🎓</span><span>Coaching</span>
+          </button>
+          <button class="venture-btn" data-type="restaurant" onclick="setVentureType('restaurant', this)">
+            <span class="v-icon">🍽️</span><span>Restaurant</span>
+          </button>
+          <button class="venture-btn" data-type="retail" onclick="setVentureType('retail', this)">
+            <span class="v-icon">🛍️</span><span>Retail</span>
+          </button>
+          <button class="venture-btn" data-type="saas" onclick="setVentureType('saas', this)">
+            <span class="v-icon">💻</span><span>SaaS</span>
+          </button>
+          <button class="venture-btn" data-type="healthcare" onclick="setVentureType('healthcare', this)">
+            <span class="v-icon">🏥</span><span>Healthcare</span>
+          </button>
+          <button class="venture-btn" data-type="ecommerce" onclick="setVentureType('ecommerce', this)">
+            <span class="v-icon">📦</span><span>E-Commerce</span>
+          </button>
+          <button class="venture-btn" data-type="realestate" onclick="setVentureType('realestate', this)">
+            <span class="v-icon">🏗️</span><span>Real Estate</span>
+          </button>
         </div>
       </div>
 
-      <!-- ── LIVE PROBABILITY INDICATOR ── -->
-      <div class="rt-bar" aria-live="polite" aria-label="Live probability score">
-        <div class="rt-dot" id="rt-dot" aria-hidden="true"></div>
-        <span class="rt-label">Live probability</span>
-        <span class="rt-val" id="rt-val" aria-label="Current probability estimate">—</span>
+      <div class="form-group">
+        <label class="form-label">Business Description <span class="required">*</span></label>
+        <textarea id="description" class="form-textarea" placeholder="Describe your business concept, target market, unique value proposition, and current stage..." rows="4"></textarea>
       </div>
 
-      <!-- ── DECISION DETAILS ── -->
-      <div>
-        <div class="sec-label">Decision Details</div>
-        <div class="field">
-          <div class="field-top">
-            <label class="field-label" for="inp-title">Title</label>
-            <span class="field-hint">required</span>
-          </div>
-          <!-- WHY: id matches label for= → screen reader links them -->
-          <input type="text" id="inp-title" name="decision-title"
-            placeholder="e.g. Launch EdTech app in Tier-2 cities"
-            autocomplete="off" spellcheck="true"
-            aria-required="true" aria-describedby="suggest-box"/>
-          <div class="suggest-box" id="suggest-box" role="listbox" aria-label="Suggestions"></div>
+      <!-- Dynamic Fields -->
+      <div id="dynamic-fields" class="dynamic-fields"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Location / Market</label>
+          <input id="location" type="text" class="form-input" placeholder="e.g. Mumbai, Online, Tier 2 Cities">
         </div>
-        <div class="field">
-          <div class="field-top">
-            <label class="field-label" for="inp-notes">Notes</label>
-            <span class="field-hint">optional</span>
-          </div>
-          <textarea id="inp-notes" name="decision-notes"
-            placeholder="Budget, team size, timeline, constraints…"
-            rows="3" aria-label="Additional notes and context"></textarea>
+        <div class="form-group">
+          <label class="form-label">Years of Experience</label>
+          <input id="experience" type="text" class="form-input" placeholder="e.g. 5 years, First Venture">
         </div>
       </div>
 
-      <!-- ── FACTOR SLIDERS ── -->
-      <div>
-        <div class="sec-label">Rate Key Factors (1–10)</div>
-        <!-- WHY: Built dynamically by JS so domains can switch -->
-        <div class="slider-list" id="slider-list" aria-label="Factor ratings"></div>
-        <button class="btn-defaults" onclick="applySmartDefaults()" style="margin-top:10px"
-          aria-label="Apply domain-appropriate default values">
-          ✦ Apply smart defaults
-        </button>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Team Size</label>
+          <input id="team_size" type="text" class="form-input" placeholder="e.g. 10 people">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Investment</label>
+          <input id="investment" type="text" class="form-input" placeholder="e.g. 5 Lakh, $50K">
+        </div>
       </div>
 
-      <!-- ── ANALYZE BUTTON ── -->
-      <button class="btn-go" id="btn-go" onclick="analyze()"
-        aria-label="Run decision analysis (Ctrl+Enter)">
-        <div class="btn-go-inner">
-          <span aria-hidden="true">⚡</span>
-          <span id="btn-go-txt">Analyze Decision</span>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Target Revenue / Growth Goal</label>
+        <input id="revenue_goal" type="text" class="form-input" placeholder="e.g. 1 Cr ARR in 2 years, 500 students in Year 1">
+      </div>
+
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeVenture()">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">Run AI Analysis</span>
+        <span class="btn-arrow">→</span>
       </button>
-      <div style="font-size:0.58rem;color:var(--t3);text-align:center;margin-top:-8px">
-        Shortcut: Ctrl + Enter
+    </div>
+
+    <!-- Right: Results Panel -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-placeholder" id="resultsPlaceholder">
+        <div class="placeholder-icon">◈</div>
+        <h3>Ready to Analyze</h3>
+        <p>Fill in your business details and click "Run AI Analysis" to get your success prediction with detailed insights.</p>
+        <div class="placeholder-features">
+          <div class="pf-item">✓ Success Probability Score</div>
+          <div class="pf-item">✓ SWOT Analysis</div>
+          <div class="pf-item">✓ Key Risk Factors</div>
+          <div class="pf-item">✓ Strategic Recommendations</div>
+          <div class="pf-item">✓ Market Potential Rating</div>
+          <div class="pf-item">✓ Timeline to Profitability</div>
+        </div>
       </div>
 
-      <!-- ── HISTORY ── -->
-      <div>
-        <div class="sec-label">Recent Analyses</div>
-        <div class="hist-scroll" id="hist-scroll" role="list" aria-label="Analysis history">
-          <div style="font-size:0.7rem;color:var(--t3)">No analyses yet</div>
+      <div class="loading-state" id="loadingState" style="display:none">
+        <div class="loader-ring"></div>
+        <div class="loader-text">AI is analyzing your venture...</div>
+        <div class="loader-steps" id="loaderSteps">
+          <div class="ls active">Evaluating market conditions</div>
+          <div class="ls">Assessing team & resources</div>
+          <div class="ls">Calculating risk factors</div>
+          <div class="ls">Generating predictions</div>
         </div>
-        <button class="btn-cmp-run" id="btn-cmp-run" onclick="runCompare()" style="display:none">
-          ⚖ Compare Selected
-        </button>
       </div>
 
-    </aside>
+      <div class="analysis-result" id="analysisResult" style="display:none"></div>
+    </div>
+  </div>
+</section>
 
-    <!-- ══════════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════════ -->
-    <main class="main-content" id="main-content" role="main">
+<!-- Examples Section -->
+<section class="examples-section" id="examples">
+  <div class="section-header">
+    <div class="section-tag">Case Studies</div>
+    <h2 class="section-title">Example Analyses</h2>
+    <p class="section-sub">Explore pre-built examples across different business categories</p>
+  </div>
 
-      <!-- ── EMPTY STATE ──────────────────────── -->
-      <div class="empty-state" id="empty-state" aria-label="Welcome screen">
-        <div class="empty-orb" aria-hidden="true">🧠</div>
-        <h1 class="empty-title">Make <span class="hl">Smarter</span> Decisions</h1>
-        <p class="empty-sub">
-          Select a domain, rate your factors, and get a full AI-powered report
-          with scenarios, risk matrix, pros/cons — in seconds.
-        </p>
-        <div class="feat-grid" aria-label="Available features">
-          <div class="feat-pill">📊 Probability</div>
-          <div class="feat-pill">🕸 Radar Chart</div>
-          <div class="feat-pill">⚠️ Risk Matrix</div>
-          <div class="feat-pill">🎯 Strategies</div>
-          <div class="feat-pill">✅ Pros & Cons</div>
-          <div class="feat-pill">🔮 Scenarios</div>
-          <div class="feat-pill">📅 Timeline</div>
-          <div class="feat-pill">🧩 Priority Matrix</div>
-          <div class="feat-pill">💡 XAI Insights</div>
-          <div class="feat-pill">🔄 What-If</div>
-          <div class="feat-pill">⚖ Compare</div>
-          <div class="feat-pill">💾 Export</div>
-        </div>
-        <!-- WHY: Mobile hint tells users how to access sidebar -->
-        <p style="font-size:0.72rem;color:var(--t3);margin-top:8px" class="mobile-hint">
-          📱 Tap the ⚡ button to start your analysis
-        </p>
-      </div>
+  <div class="example-tabs">
+    <button class="ex-tab active" onclick="filterExamples('all', this)">All</button>
+    <button class="ex-tab" onclick="filterExamples('startup', this)">🚀 Startups</button>
+    <button class="ex-tab" onclick="filterExamples('coaching', this)">🎓 Coaching</button>
+    <button class="ex-tab" onclick="filterExamples('restaurant', this)">🍽️ Restaurant</button>
+    <button class="ex-tab" onclick="filterExamples('retail', this)">🛍️ Retail</button>
+  </div>
 
-      <!-- ── RESULT VIEW ───────────────────────── -->
-      <div id="result-view" style="display:none" aria-live="polite">
+  <div class="examples-grid" id="examplesGrid">
+    <!-- Filled by JS -->
+  </div>
+</section>
 
-        <!-- HERO SCORE CARD -->
-        <div class="card" id="hero-card">
-          <div class="score-layout">
+<!-- How It Works -->
+<section class="how-section" id="how">
+  <div class="section-header">
+    <div class="section-tag">Process</div>
+    <h2 class="section-title">How DecisionIQ Works</h2>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📋</div>
+      <h3>Input Business Details</h3>
+      <p>Select your business type and provide key information about your venture — market, team, investment, and goals.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">🧠</div>
+      <h3>AI Deep Analysis</h3>
+      <p>Claude AI analyzes hundreds of factors including market dynamics, competition, team strength, financial viability, and timing.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">📊</div>
+      <h3>Probability Score</h3>
+      <p>Receive a precise success probability from 0–100% backed by comprehensive SWOT analysis and key factor breakdown.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">🎯</div>
+      <h3>Strategic Roadmap</h3>
+      <p>Get actionable recommendations, timeline to profitability, red flags to watch, and success stories to inspire your journey.</p>
+    </div>
+  </div>
+</section>
 
-            <!-- Gauge Ring -->
-            <div class="gauge-wrap" aria-label="Success probability gauge">
-              <svg viewBox="0 0 160 160" width="120" height="120">
-                <defs>
-                  <linearGradient id="g-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%"   stop-color="#38bdf8"/>
-                    <stop offset="100%" stop-color="#c084fc"/>
-                  </linearGradient>
-                </defs>
-                <circle fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="11" cx="80" cy="80" r="60"/>
-                <circle id="g-arc" fill="none" stroke="url(#g-grad)" stroke-width="11"
-                  stroke-linecap="round" cx="80" cy="80" r="60"
-                  stroke-dasharray="376.99" stroke-dashoffset="376.99"
-                  transform="rotate(-90 80 80)"
-                  style="transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)"/>
-              </svg>
-              <div class="gauge-center">
-                <span class="gauge-num" id="g-num" aria-label="Probability score">—</span>
-                <span class="gauge-lbl">success</span>
-              </div>
-            </div>
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="logo"><span class="logo-icon">◈</span><span class="logo-text">Decision<span class="accent">IQ</span></span></div>
+    <p class="footer-text">AI-Powered Business Intelligence · Powered by Claude AI</p>
+  </div>
+</footer>
 
-            <!-- Score Info -->
-            <div class="score-body">
-              <div id="verdict-chip" class="verdict-chip" role="status">—</div>
-              <h2 class="score-title" id="h-title">—</h2>
-              <p class="score-reason" id="v-reason">—</p>
-              <div class="score-meta">
-                Domain: <strong id="h-domain">—</strong> &nbsp;·&nbsp;
-                Confidence: <strong id="h-conf">—</strong>% &nbsp;·&nbsp;
-                Percentile: <strong id="h-pct">—</strong>th &nbsp;·&nbsp;
-                Risk: <strong id="h-risk">—</strong>
-              </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="score-stats">
-              <div class="stat-box">
-                <div class="stat-val" id="s-prob">—</div>
-                <div class="stat-lbl">Probability</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-val" id="s-conf">—</div>
-                <div class="stat-lbl">Confidence</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-val" id="s-risk">—</div>
-                <div class="stat-lbl">Risk Level</div>
-              </div>
-            </div>
-          </div>
-
-          <div id="bias-zone"></div>
-
-          <div class="exp-row">
-            <button class="ebtn ec" onclick="exportJSON()" aria-label="Export as JSON">⬇ JSON</button>
-            <button class="ebtn eg" onclick="exportReport()" aria-label="Export text report">⬇ Report</button>
-            <button class="ebtn ep" onclick="window.print()" aria-label="Print report">🖨 Print</button>
-          </div>
-        </div>
-
-        <!-- FACTORS + RADAR -->
-        <div class="g2">
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title"><span class="card-dot"></span>Factor Breakdown</span>
-            </div>
-            <div class="factor-list" id="factor-list" role="list"></div>
-          </div>
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple)"></span>
-                Radar Analysis
-              </span>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="radar-canvas" aria-label="Radar chart showing factor scores"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- XAI INSIGHTS -->
-        <div class="card">
-          <div class="card-hd">
-            <span class="card-title">
-              <span class="card-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
-              AI Insights (XAI)
-            </span>
-          </div>
-          <div class="ins-list" id="ins-list" role="list"></div>
-        </div>
-
-        <!-- PROS & CONS + SCENARIOS -->
-        <div class="g2">
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--green);box-shadow:0 0 6px var(--green)"></span>
-                Pros & Cons
-              </span>
-            </div>
-            <div class="pc-grid">
-              <div class="pc-panel">
-                <div class="pc-hd pro">✓ Advantages</div>
-                <div class="pc-list" id="pros-list"></div>
-              </div>
-              <div class="pc-panel">
-                <div class="pc-hd con">✗ Disadvantages</div>
-                <div class="pc-list" id="cons-list"></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--orange);box-shadow:0 0 6px var(--orange)"></span>
-                Scenario Simulation
-              </span>
-            </div>
-            <div class="sc-grid">
-              <div class="sc-card sc-best">
-                <div class="sc-lbl">Best Case</div>
-                <div class="sc-score" id="sc-best-s">—</div>
-                <div class="sc-track"><div class="sc-fill" id="sc-best-b" style="width:0%"></div></div>
-                <div class="sc-cond" id="sc-best-c">—</div>
-              </div>
-              <div class="sc-card sc-base">
-                <div class="sc-lbl">Base Case</div>
-                <div class="sc-score" id="sc-base-s">—</div>
-                <div class="sc-track"><div class="sc-fill" id="sc-base-b" style="width:0%"></div></div>
-                <div class="sc-cond" id="sc-base-c">—</div>
-              </div>
-              <div class="sc-card sc-worst">
-                <div class="sc-lbl">Worst Case</div>
-                <div class="sc-score" id="sc-worst-s">—</div>
-                <div class="sc-track"><div class="sc-fill" id="sc-worst-b" style="width:0%"></div></div>
-                <div class="sc-cond" id="sc-worst-c">—</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- RISKS + STRATEGIES -->
-        <div class="g2">
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--red);box-shadow:0 0 6px var(--red)"></span>
-                Risk Analysis
-              </span>
-            </div>
-            <div class="tab-bar" role="tablist">
-              <button class="tab-btn on" role="tab" aria-selected="true"  onclick="switchTab(this,'risks-all')">All</button>
-              <button class="tab-btn"    role="tab" aria-selected="false" onclick="switchTab(this,'risks-high')">High</button>
-              <button class="tab-btn"    role="tab" aria-selected="false" onclick="switchTab(this,'risks-med')">Medium</button>
-              <button class="tab-btn"    role="tab" aria-selected="false" onclick="switchTab(this,'risks-low')">Low</button>
-            </div>
-            <div class="tab-pane on" id="risks-all"  role="tabpanel"></div>
-            <div class="tab-pane"    id="risks-high" role="tabpanel"></div>
-            <div class="tab-pane"    id="risks-med"  role="tabpanel"></div>
-            <div class="tab-pane"    id="risks-low"  role="tabpanel"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--teal);box-shadow:0 0 6px var(--teal)"></span>
-                Strategies
-              </span>
-            </div>
-            <div class="strat-list" id="strat-list" role="list"></div>
-          </div>
-        </div>
-
-        <!-- PRIORITY MATRIX + TIMELINE -->
-        <div class="g2">
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:var(--pink);box-shadow:0 0 6px var(--pink)"></span>
-                Priority Matrix
-              </span>
-            </div>
-            <div class="pm-grid" id="pm-grid"></div>
-          </div>
-          <div class="card">
-            <div class="card-hd">
-              <span class="card-title">
-                <span class="card-dot" style="background:#a3e635;box-shadow:0 0 6px #a3e635"></span>
-                Action Timeline
-              </span>
-            </div>
-            <div class="timeline" id="timeline" role="list"></div>
-          </div>
-        </div>
-
-        <!-- WHAT-IF SIMULATION -->
-        <div class="card">
-          <div class="card-hd">
-            <span class="card-title">
-              <span class="card-dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple)"></span>
-              What-If Simulation
-            </span>
-            <button onclick="resetWI()"
-              aria-label="Reset all what-if adjustments"
-              style="font-size:0.68rem;background:none;border:1px solid var(--b2);color:var(--t2);
-                     padding:4px 10px;border-radius:var(--r1);cursor:pointer;
-                     min-height:32px;transition:all 0.2s"
-              onmouseover="this.style.color='var(--cyan)';this.style.borderColor='var(--cyan)'"
-              onmouseout="this.style.color='var(--t2)';this.style.borderColor='var(--b2)'">
-              ↺ Reset
-            </button>
-          </div>
-          <div class="wi-grid" id="wi-grid"></div>
-        </div>
-
-        <div class="res-id" id="res-id" aria-label="Result identifier"></div>
-
-      </div><!-- /result-view -->
-
-      <!-- ── COMPARE VIEW ──────────────────────── -->
-      <div id="compare-view" style="display:none" role="region" aria-label="Decision comparison">
-        <h2 style="font-size:1.1rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:16px">
-          ⚖ &nbsp;Decision Comparison
-        </h2>
-        <div class="cmp-wrap" id="cmp-wrap"></div>
-      </div>
-
-    </main>
-  </div><!-- /workspace -->
-</div><!-- /app -->
-
-<!-- WHY: JS at bottom = HTML renders first, then JS enhances it -->
-<!-- WHY: Separate file = cacheable, team-maintainable, debuggable -->
 <script src="/static/js/app.js"></script>
-<script>
-  /**
-   * Flask template injection:
-   * WHY: We pass domains config from Python → JavaScript here.
-   * This is the bridge between backend and frontend.
-   * The | safe filter prevents Jinja from escaping the JSON.
-   */
-  const DOMAINS_DATA = {{ domains | safe }};
-  // Boot the app with domains config
-  init(DOMAINS_DATA);
-</script>
 </body>
 </html>
