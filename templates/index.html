@@ -3,231 +3,314 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DecisionIQ — AI-Powered Business Intelligence</title>
+<title>DecisionIQ — AI Business Intelligence Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-<!-- Animated Background -->
-<div class="bg-grid"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
+<!-- Canvas BG -->
+<canvas id="bgCanvas"></canvas>
+<div class="noise-overlay"></div>
 
-<!-- Header -->
-<header class="header">
-  <div class="header-inner">
-    <div class="logo">
-      <span class="logo-icon">◈</span>
-      <span class="logo-text">Decision<span class="accent">IQ</span></span>
+<!-- ─── SIDEBAR ─────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">◈</div>
+    <div class="sb-logo-text">Decision<span>IQ</span></div>
+    <button class="sb-close" onclick="toggleSidebar()" aria-label="Close">✕</button>
+  </div>
+
+  <nav class="sb-nav">
+    <a class="sb-item active" onclick="showPage('analyze',this)" href="#">
+      <span class="sb-icon">⚡</span><span>Analyze</span>
+    </a>
+    <a class="sb-item" onclick="showPage('compare',this)" href="#">
+      <span class="sb-icon">⚖️</span><span>Compare</span>
+    </a>
+    <a class="sb-item" onclick="showPage('examples',this)" href="#">
+      <span class="sb-icon">📚</span><span>Examples</span>
+    </a>
+    <a class="sb-item" onclick="showPage('history',this)" href="#">
+      <span class="sb-icon">🕐</span><span>History</span>
+      <span class="sb-badge" id="histBadge" style="display:none">0</span>
+    </a>
+  </nav>
+
+  <div class="sb-models">
+    <div class="sb-section-label">ML Models Active</div>
+    <div class="model-list">
+      <div class="model-dot"><span class="dot green"></span>Startup (96.1%)</div>
+      <div class="model-dot"><span class="dot green"></span>Coaching (100%)</div>
+      <div class="model-dot"><span class="dot green"></span>Restaurant (99.8%)</div>
+      <div class="model-dot"><span class="dot green"></span>Retail (100%)</div>
+      <div class="model-dot"><span class="dot green"></span>SaaS (98.7%)</div>
+      <div class="model-dot"><span class="dot green"></span>Healthcare (99.4%)</div>
     </div>
-    <nav class="nav">
-      <a href="#analyze" class="nav-link">Analyze</a>
-      <a href="#examples" class="nav-link">Examples</a>
-      <a href="#how" class="nav-link">How It Works</a>
-    </nav>
-    <div class="header-badge">AI Powered</div>
-  </div>
-</header>
-
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-tag">Predictive Intelligence Engine</div>
-  <h1 class="hero-title">
-    Know If Your<br>
-    <span class="hero-gradient">Business Will Succeed</span><br>
-    Before You Begin
-  </h1>
-  <p class="hero-sub">AI analyzes startups, coaching institutes, restaurants, retail brands & more — delivering precise success probability with deep strategic insights.</p>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-num">15+</span><span class="stat-label">Business Types</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Analysis Accuracy</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num">< 10s</span><span class="stat-label">Response Time</span></div>
-  </div>
-  <a href="#analyze" class="cta-btn">Start Analysis <span>→</span></a>
-</section>
-
-<!-- Main Analyzer -->
-<section class="analyzer-section" id="analyze">
-  <div class="section-header">
-    <div class="section-tag">Intelligence Engine</div>
-    <h2 class="section-title">Analyze Any Business</h2>
-    <p class="section-sub">Fill in your details and let AI deliver a comprehensive success prediction</p>
   </div>
 
-  <div class="analyzer-container">
-    <!-- Left: Form Panel -->
-    <div class="form-panel">
-      <div class="venture-selector">
-        <div class="venture-label">Select Business Type</div>
-        <div class="venture-grid">
-          <button class="venture-btn active" data-type="startup" onclick="setVentureType('startup', this)">
-            <span class="v-icon">🚀</span><span>Startup</span>
-          </button>
-          <button class="venture-btn" data-type="coaching" onclick="setVentureType('coaching', this)">
-            <span class="v-icon">🎓</span><span>Coaching</span>
-          </button>
-          <button class="venture-btn" data-type="restaurant" onclick="setVentureType('restaurant', this)">
-            <span class="v-icon">🍽️</span><span>Restaurant</span>
-          </button>
-          <button class="venture-btn" data-type="retail" onclick="setVentureType('retail', this)">
-            <span class="v-icon">🛍️</span><span>Retail</span>
-          </button>
-          <button class="venture-btn" data-type="saas" onclick="setVentureType('saas', this)">
-            <span class="v-icon">💻</span><span>SaaS</span>
-          </button>
-          <button class="venture-btn" data-type="healthcare" onclick="setVentureType('healthcare', this)">
-            <span class="v-icon">🏥</span><span>Healthcare</span>
-          </button>
-          <button class="venture-btn" data-type="ecommerce" onclick="setVentureType('ecommerce', this)">
-            <span class="v-icon">📦</span><span>E-Commerce</span>
-          </button>
-          <button class="venture-btn" data-type="realestate" onclick="setVentureType('realestate', this)">
-            <span class="v-icon">🏗️</span><span>Real Estate</span>
-          </button>
+  <div class="sb-footer">
+    <div class="sb-footer-badge">🔒 No API Key · 100% Local ML</div>
+  </div>
+</aside>
+
+<!-- ─── TOPBAR ─────────────────────────────────────── -->
+<div class="topbar">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <div class="topbar-logo">◈ Decision<span>IQ</span></div>
+  <div class="topbar-right">
+    <div class="topbar-badge">ML Powered</div>
+  </div>
+</div>
+
+<!-- ─── MAIN ──────────────────────────────────────── -->
+<main class="main" id="mainContent">
+
+  <!-- ══ PAGE: ANALYZE ════════════════════════════ -->
+  <div class="page active" id="page-analyze">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-chip">🤖 Gradient Boosting ML · 96–100% Accuracy · No API Key</div>
+      <h1 class="hero-title">Predict Your Business<br><span class="grad-text">Success Probability</span></h1>
+      <p class="hero-sub">ML models trained on 24,000+ venture profiles deliver instant predictions with SWOT, risk breakdown, sector benchmarks & strategic roadmap.</p>
+      <div class="stat-row">
+        <div class="stat-pill"><span>⚡</span><b>6 Models</b><span>Active</span></div>
+        <div class="stat-pill"><span>🎯</span><b>20+</b><span>Factors</span></div>
+        <div class="stat-pill"><span>📊</span><b>Sector</b><span>Benchmarks</span></div>
+        <div class="stat-pill"><span>🔒</span><b>Free</b><span>No API</span></div>
+      </div>
+    </section>
+
+    <!-- Analyzer Grid -->
+    <div class="analyzer-grid">
+
+      <!-- FORM -->
+      <div class="card form-card">
+        <div class="card-header">
+          <h2 class="card-title">Business Details</h2>
+          <div class="card-sub">Fill in your venture information</div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="form-label">Business Description <span class="required">*</span></label>
-        <textarea id="description" class="form-textarea" placeholder="Describe your business concept, target market, unique value proposition, and current stage..." rows="4"></textarea>
-      </div>
+        <!-- Type Selector -->
+        <div class="type-selector">
+          <div class="type-label">Business Type</div>
+          <div class="type-grid" id="typeGrid">
+            <button class="type-btn active" data-type="startup"     onclick="setType('startup',this)">    <span>🚀</span><span>Startup</span></button>
+            <button class="type-btn"        data-type="coaching"    onclick="setType('coaching',this)">   <span>🎓</span><span>Coaching</span></button>
+            <button class="type-btn"        data-type="restaurant"  onclick="setType('restaurant',this)"> <span>🍽️</span><span>Restaurant</span></button>
+            <button class="type-btn"        data-type="retail"      onclick="setType('retail',this)">     <span>🛍️</span><span>Retail/D2C</span></button>
+            <button class="type-btn"        data-type="saas"        onclick="setType('saas',this)">       <span>💻</span><span>SaaS</span></button>
+            <button class="type-btn"        data-type="healthcare"  onclick="setType('healthcare',this)"> <span>🏥</span><span>Healthcare</span></button>
+            <button class="type-btn"        data-type="ecommerce"   onclick="setType('ecommerce',this)">  <span>📦</span><span>E-Commerce</span></button>
+            <button class="type-btn"        data-type="realestate"  onclick="setType('realestate',this)"> <span>🏗️</span><span>Real Estate</span></button>
+            <button class="type-btn"        data-type="manufacturing" onclick="setType('manufacturing',this)"><span>🏭</span><span>Manufact.</span></button>
+            <button class="type-btn"        data-type="agriculture" onclick="setType('agriculture',this)"><span>🌾</span><span>AgriTech</span></button>
+          </div>
+        </div>
 
-      <!-- Dynamic Fields -->
-      <div id="dynamic-fields" class="dynamic-fields"></div>
-
-      <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Location / Market</label>
-          <input id="location" type="text" class="form-input" placeholder="e.g. Mumbai, Online, Tier 2 Cities">
+          <label class="label">Business Description <span class="req">*</span></label>
+          <textarea id="f_description" class="input textarea" rows="3" placeholder="Describe your business — target market, problem solved, unique angle…"></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Years of Experience</label>
-          <input id="experience" type="text" class="form-input" placeholder="e.g. 5 years, First Venture">
+
+        <div id="dynFields"></div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="label">Location / Market</label>
+            <input id="f_location" class="input" placeholder="e.g. Mumbai, Kota, Online">
+          </div>
+          <div class="form-group">
+            <label class="label">Experience (Years)</label>
+            <input id="f_experience" class="input" placeholder="e.g. 5">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="label">Team Size</label>
+            <input id="f_team_size" class="input" placeholder="e.g. 8">
+          </div>
+          <div class="form-group">
+            <label class="label">Investment / Funding</label>
+            <input id="f_investment" class="input" placeholder="e.g. 5 Lakh, $50K">
+          </div>
+        </div>
+
+        <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">
+          <span class="btn-spark">⚡</span>
+          <span id="btnText">Run ML Prediction</span>
+          <span class="btn-arr">→</span>
+        </button>
+
+        <!-- Quick Tips -->
+        <div class="quick-tips">
+          <div class="tips-title">💡 Quick Tips</div>
+          <div class="tips-grid">
+            <div class="tip">More details = better accuracy</div>
+            <div class="tip">Use examples to see how it works</div>
+            <div class="tip">Compare 2 ventures side-by-side</div>
+            <div class="tip">Export results as PDF</div>
+          </div>
         </div>
       </div>
 
-      <div class="form-row">
+      <!-- RESULTS -->
+      <div class="card results-card" id="resultsCard">
+
+        <!-- Placeholder -->
+        <div id="rph" class="r-ph">
+          <div class="ph-anim">
+            <div class="ph-ring ph-ring-1"></div>
+            <div class="ph-ring ph-ring-2"></div>
+            <div class="ph-ring ph-ring-3"></div>
+            <div class="ph-center">◈</div>
+          </div>
+          <h3>Ready to Analyze</h3>
+          <p>Describe your business and click <strong>Run ML Prediction</strong> to get your success report.</p>
+          <div class="ph-features">
+            <div class="ph-f">📊 Success Probability</div>
+            <div class="ph-f">🔄 SWOT Analysis</div>
+            <div class="ph-f">⚠️ Risk Breakdown</div>
+            <div class="ph-f">🏆 Sector Benchmark</div>
+            <div class="ph-f">🎯 Recommendations</div>
+            <div class="ph-f">📤 Export to PDF</div>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="rload" style="display:none" class="r-load">
+          <div class="load-bars">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+          <div class="load-label" id="loadLabel">Extracting features…</div>
+          <div class="load-progress"><div class="load-fill" id="loadFill"></div></div>
+          <div class="load-steps">
+            <div class="ls" id="ls0">✦ Feature Engineering</div>
+            <div class="ls" id="ls1">✦ Running ML Model</div>
+            <div class="ls" id="ls2">✦ SWOT & Risk Analysis</div>
+            <div class="ls" id="ls3">✦ Sector Benchmarking</div>
+            <div class="ls" id="ls4">✦ Building Report</div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div id="rresult" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE: COMPARE ════════════════════════════ -->
+  <div class="page" id="page-compare">
+    <div class="page-header">
+      <h2 class="page-title">⚖️ Compare Ventures</h2>
+      <p class="page-sub">Analyze two business ideas side-by-side to make informed decisions</p>
+    </div>
+    <div class="compare-grid">
+      <div class="card compare-card" id="cmp1">
+        <div class="cmp-label">Venture A</div>
         <div class="form-group">
-          <label class="form-label">Team Size</label>
-          <input id="team_size" type="text" class="form-input" placeholder="e.g. 10 people">
+          <label class="label">Business Type</label>
+          <select id="c1_type" class="input select">
+            <option value="startup">🚀 Startup</option>
+            <option value="coaching">🎓 Coaching</option>
+            <option value="restaurant">🍽️ Restaurant</option>
+            <option value="retail">🛍️ Retail/D2C</option>
+            <option value="saas">💻 SaaS</option>
+            <option value="healthcare">🏥 Healthcare</option>
+          </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Initial Investment</label>
-          <input id="investment" type="text" class="form-input" placeholder="e.g. 5 Lakh, $50K">
+          <label class="label">Description <span class="req">*</span></label>
+          <textarea id="c1_desc" class="input textarea" rows="3" placeholder="Describe Venture A…"></textarea>
         </div>
+        <div class="form-row-2">
+          <div class="form-group"><label class="label">Investment</label><input id="c1_investment" class="input" placeholder="e.g. 10 Lakh"></div>
+          <div class="form-group"><label class="label">Team Size</label><input id="c1_team" class="input" placeholder="e.g. 5"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label class="label">Experience (yrs)</label><input id="c1_exp" class="input" placeholder="e.g. 3"></div>
+          <div class="form-group"><label class="label">Location</label><input id="c1_loc" class="input" placeholder="e.g. Delhi"></div>
+        </div>
+        <div class="form-group"><label class="label">Revenue / MRR</label><input id="c1_mrr" class="input" placeholder="e.g. 2 Lakh MRR"></div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Target Revenue / Growth Goal</label>
-        <input id="revenue_goal" type="text" class="form-input" placeholder="e.g. 1 Cr ARR in 2 years, 500 students in Year 1">
+      <div class="cmp-vs">
+        <div class="vs-circle">VS</div>
       </div>
 
-      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeVenture()">
-        <span class="btn-icon">⚡</span>
-        <span class="btn-text">Run AI Analysis</span>
-        <span class="btn-arrow">→</span>
+      <div class="card compare-card" id="cmp2">
+        <div class="cmp-label">Venture B</div>
+        <div class="form-group">
+          <label class="label">Business Type</label>
+          <select id="c2_type" class="input select">
+            <option value="startup">🚀 Startup</option>
+            <option value="coaching">🎓 Coaching</option>
+            <option value="restaurant">🍽️ Restaurant</option>
+            <option value="retail">🛍️ Retail/D2C</option>
+            <option value="saas">💻 SaaS</option>
+            <option value="healthcare">🏥 Healthcare</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="label">Description <span class="req">*</span></label>
+          <textarea id="c2_desc" class="input textarea" rows="3" placeholder="Describe Venture B…"></textarea>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label class="label">Investment</label><input id="c2_investment" class="input" placeholder="e.g. 5 Lakh"></div>
+          <div class="form-group"><label class="label">Team Size</label><input id="c2_team" class="input" placeholder="e.g. 3"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label class="label">Experience (yrs)</label><input id="c2_exp" class="input" placeholder="e.g. 1"></div>
+          <div class="form-group"><label class="label">Location</label><input id="c2_loc" class="input" placeholder="e.g. Online"></div>
+        </div>
+        <div class="form-group"><label class="label">Revenue / MRR</label><input id="c2_mrr" class="input" placeholder="e.g. Pre-revenue"></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin:24px 0">
+      <button class="analyze-btn" style="max-width:320px;margin:0 auto" onclick="runCompare()">
+        <span>⚖️</span><span>Compare Both Ventures</span><span>→</span>
       </button>
     </div>
 
-    <!-- Right: Results Panel -->
-    <div class="results-panel" id="resultsPanel">
-      <div class="results-placeholder" id="resultsPlaceholder">
-        <div class="placeholder-icon">◈</div>
-        <h3>Ready to Analyze</h3>
-        <p>Fill in your business details and click "Run AI Analysis" to get your success prediction with detailed insights.</p>
-        <div class="placeholder-features">
-          <div class="pf-item">✓ Success Probability Score</div>
-          <div class="pf-item">✓ SWOT Analysis</div>
-          <div class="pf-item">✓ Key Risk Factors</div>
-          <div class="pf-item">✓ Strategic Recommendations</div>
-          <div class="pf-item">✓ Market Potential Rating</div>
-          <div class="pf-item">✓ Timeline to Profitability</div>
-        </div>
+    <div id="compareResult" style="display:none"></div>
+  </div>
+
+  <!-- ══ PAGE: EXAMPLES ═══════════════════════════ -->
+  <div class="page" id="page-examples">
+    <div class="page-header">
+      <h2 class="page-title">📚 Example Analyses</h2>
+      <p class="page-sub">Click any example to load and analyze it instantly</p>
+    </div>
+    <div class="ex-tabs" id="exTabs">
+      <button class="ex-tab active" onclick="filterEx('all',this)">All</button>
+      <button class="ex-tab" onclick="filterEx('startup',this)">🚀 Startup</button>
+      <button class="ex-tab" onclick="filterEx('coaching',this)">🎓 Coaching</button>
+      <button class="ex-tab" onclick="filterEx('restaurant',this)">🍽️ Restaurant</button>
+      <button class="ex-tab" onclick="filterEx('retail',this)">🛍️ Retail</button>
+      <button class="ex-tab" onclick="filterEx('saas',this)">💻 SaaS</button>
+    </div>
+    <div class="ex-grid" id="exGrid"></div>
+  </div>
+
+  <!-- ══ PAGE: HISTORY ════════════════════════════ -->
+  <div class="page" id="page-history">
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <h2 class="page-title">🕐 Analysis History</h2>
+        <p class="page-sub">Your recent predictions (stored in session)</p>
       </div>
-
-      <div class="loading-state" id="loadingState" style="display:none">
-        <div class="loader-ring"></div>
-        <div class="loader-text">AI is analyzing your venture...</div>
-        <div class="loader-steps" id="loaderSteps">
-          <div class="ls active">Evaluating market conditions</div>
-          <div class="ls">Assessing team & resources</div>
-          <div class="ls">Calculating risk factors</div>
-          <div class="ls">Generating predictions</div>
-        </div>
-      </div>
-
-      <div class="analysis-result" id="analysisResult" style="display:none"></div>
+      <button class="clear-btn" onclick="clearHistory()">🗑️ Clear All</button>
     </div>
-  </div>
-</section>
-
-<!-- Examples Section -->
-<section class="examples-section" id="examples">
-  <div class="section-header">
-    <div class="section-tag">Case Studies</div>
-    <h2 class="section-title">Example Analyses</h2>
-    <p class="section-sub">Explore pre-built examples across different business categories</p>
+    <div id="historyList"></div>
   </div>
 
-  <div class="example-tabs">
-    <button class="ex-tab active" onclick="filterExamples('all', this)">All</button>
-    <button class="ex-tab" onclick="filterExamples('startup', this)">🚀 Startups</button>
-    <button class="ex-tab" onclick="filterExamples('coaching', this)">🎓 Coaching</button>
-    <button class="ex-tab" onclick="filterExamples('restaurant', this)">🍽️ Restaurant</button>
-    <button class="ex-tab" onclick="filterExamples('retail', this)">🛍️ Retail</button>
-  </div>
+</main>
 
-  <div class="examples-grid" id="examplesGrid">
-    <!-- Filled by JS -->
-  </div>
-</section>
-
-<!-- How It Works -->
-<section class="how-section" id="how">
-  <div class="section-header">
-    <div class="section-tag">Process</div>
-    <h2 class="section-title">How DecisionIQ Works</h2>
-  </div>
-  <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-icon">📋</div>
-      <h3>Input Business Details</h3>
-      <p>Select your business type and provide key information about your venture — market, team, investment, and goals.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-icon">🧠</div>
-      <h3>AI Deep Analysis</h3>
-      <p>Claude AI analyzes hundreds of factors including market dynamics, competition, team strength, financial viability, and timing.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-icon">📊</div>
-      <h3>Probability Score</h3>
-      <p>Receive a precise success probability from 0–100% backed by comprehensive SWOT analysis and key factor breakdown.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">04</div>
-      <div class="step-icon">🎯</div>
-      <h3>Strategic Roadmap</h3>
-      <p>Get actionable recommendations, timeline to profitability, red flags to watch, and success stories to inspire your journey.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="logo"><span class="logo-icon">◈</span><span class="logo-text">Decision<span class="accent">IQ</span></span></div>
-    <p class="footer-text">AI-Powered Business Intelligence · Powered by Claude AI</p>
-  </div>
-</footer>
+<!-- Print/Export overlay -->
+<div id="printArea" style="display:none"></div>
 
 <script src="/static/js/app.js"></script>
 </body>
